@@ -40,7 +40,11 @@ export const Login = () => {
 
   return (
     <>
-      <ModalError isOpen={isModalErrorOpen} onClose={onModalErrorClose} />
+      <ModalError
+        mess="E-mail or password invalid"
+        isOpen={isModalErrorOpen}
+        onClose={onModalErrorClose}
+      />
       <Flex
         alignItems="center"
         alignContent="center"

@@ -16,9 +16,10 @@ import sabercry from '../../assets/sabercry.jpg'
 interface ModalErrorProps {
   isOpen: boolean
   onClose: () => void
+  mess: string
 }
 
-export const ModalError = ({ isOpen, onClose }: ModalErrorProps) => {
+export const ModalError = ({ isOpen, onClose, mess }: ModalErrorProps) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -29,7 +30,7 @@ export const ModalError = ({ isOpen, onClose }: ModalErrorProps) => {
         <ModalBody>
           <Center flexDir="column">
             <Text fontWeight="bold" fontSize="lg">
-              We have a problem Master!!!
+              {mess}
             </Text>
             <Image width="150px" src={sabercry} />
           </Center>

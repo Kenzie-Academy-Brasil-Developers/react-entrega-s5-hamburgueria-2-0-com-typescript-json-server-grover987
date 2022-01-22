@@ -54,7 +54,11 @@ export const SignUp = () => {
     <>
       <ModalSuccess isOpen={isModalSuccessOpen} onClose={onModalSuccessClose} />
 
-      <ModalError isOpen={isModalErrorOpen} onClose={onModalErrorClose} />
+      <ModalError
+        mess="Your e-mail already exist!!!"
+        isOpen={isModalErrorOpen}
+        onClose={onModalErrorClose}
+      />
       <Flex
         alignItems="center"
         alignContent="center"
