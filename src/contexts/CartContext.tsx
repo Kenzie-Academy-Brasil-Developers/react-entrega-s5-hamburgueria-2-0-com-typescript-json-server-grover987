@@ -19,6 +19,7 @@ interface Product {
   imgUrl: string
   price: number
   userId: number
+  id?: number
 }
 
 interface CartContextData {
@@ -30,6 +31,14 @@ interface CartContextData {
   handleSearch: any
   filtered: Product[]
   loadFiltered: () => Promise<void>
+  loadCart: any
+  removeCart: (product: Product, acessToken: string) => Promise<void>
+}
+
+interface User {
+  email: string
+  id: number
+  name: string
 }
 
 const CartContext = createContext<CartContextData>({} as CartContextData)
@@ -60,6 +69,20 @@ const CartProvider = ({ children }: CartProviderProps) => {
     }
   }, [])
 
+  const loadCart = useCallback(async (user: User, accessToken: string) => {
+    try {
+      const response = await api.get(`/cart?userId=${user.id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
+
+      setCart(response.data)
+    } catch (err) {
+      console.log(err)
+    }
+  }, [])
+
   const addCart = useCallback(async (data: Product, accessToken: string) => {
     api
       .post('/cart', data, {
@@ -67,9 +90,23 @@ const CartProvider = ({ children }: CartProviderProps) => {
           Authorization: `Bearer ${accessToken}`
         }
       })
-      .then((res: AxiosResponse<Product>) => console.log(res))
+      .then((res: AxiosResponse<Product>) => console.log(res.data))
       .catch(err => console.log(err))
   }, [])
+
+  const removeCart = useCallback(
+    async (product: Product, accessToken: string) => {
+      api
+        .delete(`/cart/${product.id}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
+        })
+        .then((res: AxiosResponse<Product>) => console.log(res.data))
+        .catch(err => console.log(err))
+    },
+    []
+  )
 
   const handleSearch = (text: string) => {
     setSearch(text)
@@ -98,7 +135,9 @@ const CartProvider = ({ children }: CartProviderProps) => {
         search,
         handleSearch,
         loadFiltered,
-        filtered
+        filtered,
+        removeCart,
+        loadCart
       }}
     >
       {children}
