@@ -1,9 +1,10 @@
-import { Box, Center, Flex, Icon, Image } from '@chakra-ui/react'
+import { Box, Center, Flex, Icon, Image, useDisclosure } from '@chakra-ui/react'
 import logo from '../../assets/saberBorgarLogo.png'
 import { useAuth } from '../../contexts/AuthContext'
 import { FaSignOutAlt, FaShoppingCart, FaSearch } from 'react-icons/fa'
-import { HeaderInput } from './HeaderInput'
 import { useEffect, useState } from 'react'
+import { SearchBox } from '../Form/SearchBox'
+import { ModalCart } from '../Modal/ModalCart'
 
 export const Header = () => {
   const { signOut } = useAuth()
@@ -23,19 +24,32 @@ export const Header = () => {
     return () => window.removeEventListener('resize', updateMedia)
   })
 
+  const {
+    isOpen: isModalCartOpen,
+    onOpen: onModalCartOpen,
+    onClose: onModalCartClose
+  } = useDisclosure()
+
   return (
     <Flex
       alignItems="center"
       justifyContent="space-between"
       h="80px"
       w="100%"
+      padding="5"
       bg="gray.50"
+      marginBottom="8"
     >
       <Image maxH="50px" src={logo} />
+      <ModalCart
+        isOpen={isModalCartOpen}
+        onClose={onModalCartClose}
+        mess="oi"
+      />
 
       <Center>
         {isDesktop ? (
-          <HeaderInput />
+          <SearchBox />
         ) : (
           <Icon
             color="gray.100"
@@ -64,16 +78,17 @@ export const Header = () => {
           >
             1
           </Center>
-          <Icon
+          <Box
+            as="button"
             color="gray.100"
             _hover={{ color: 'gray.300' }}
             cursor="pointer"
             mr="4"
             ml="4"
-            w="8"
-            h="8"
-            as={FaShoppingCart}
-          />
+            onClick={onModalCartOpen}
+          >
+            <FaShoppingCart size="38px" />
+          </Box>
         </Box>
 
         <Icon
