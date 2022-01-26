@@ -82,26 +82,20 @@ const CartProvider = ({ children }: CartProviderProps) => {
           Authorization: `Bearer ${accessToken}`
         }
       })
-      .then((res: AxiosResponse<Product>) => console.log(res.data))
       .then(() => loadCart(user, accessToken))
       .then(_ =>
         setTotal(cart.map(e => e.price).reduce((acc, cur) => acc + cur, 0))
       )
-      .catch(err => console.log(err))
   }, [])
 
   const loadCart = useCallback(async (user: User, accessToken: string) => {
-    try {
-      const response = await api.get(`/cart?userId=${user.id}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      })
-      if (response.data.length >= 0) {
-        setCart(response.data)
+    const response = await api.get(`/cart?userId=${user.id}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
       }
-    } catch (err) {
-      console.log(err)
+    })
+    if (response.data.length >= 0) {
+      setCart(response.data)
     }
   }, [])
 
@@ -117,7 +111,6 @@ const CartProvider = ({ children }: CartProviderProps) => {
         .then(_ =>
           setTotal(cart.map(e => e.price).reduce((acc, cur) => acc + cur, 0))
         )
-        .catch(err => console.log(err))
     },
     []
   )
