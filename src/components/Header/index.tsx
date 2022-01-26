@@ -5,9 +5,11 @@ import { FaSignOutAlt, FaShoppingCart, FaSearch } from 'react-icons/fa'
 import { useEffect, useState } from 'react'
 import { SearchBox } from '../Form/SearchBox'
 import { ModalCart } from '../Modal/ModalCart'
+import { useCart } from '../../contexts/CartContext'
 
 export const Header = () => {
   const { signOut } = useAuth()
+  const { getTotal } = useCart()
 
   const [isDesktop, setDesktop] = useState(window.innerWidth > 750)
 
@@ -29,6 +31,11 @@ export const Header = () => {
     onOpen: onModalCartOpen,
     onClose: onModalCartClose
   } = useDisclosure()
+
+  const open = () => {
+    getTotal()
+    onModalCartOpen()
+  }
 
   return (
     <Flex
@@ -85,7 +92,7 @@ export const Header = () => {
             cursor="pointer"
             mr="4"
             ml="4"
-            onClick={onModalCartOpen}
+            onClick={open}
           >
             <FaShoppingCart size="38px" />
           </Box>

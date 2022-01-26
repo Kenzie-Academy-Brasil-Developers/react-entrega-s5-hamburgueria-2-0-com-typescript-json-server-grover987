@@ -28,7 +28,7 @@ export const Dashboard = () => {
           overflowX={['scroll', 'scroll', 'unset', 'unset']}
           wrap={['nowrap', 'nowrap', 'wrap', 'wrap']}
         >
-          {search != ''
+          {search !== ''
             ? filtered.map(product => (
                 <Card key={product.name} product={product} />
               ))

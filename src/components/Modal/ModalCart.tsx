@@ -3,7 +3,6 @@ import {
   Button,
   Center,
   Flex,
-  HStack,
   Image,
   Modal,
   ModalBody,
@@ -15,6 +14,7 @@ import {
   Text
 } from '@chakra-ui/react'
 import { useEffect } from 'react'
+import { FaTrash } from 'react-icons/fa'
 import { useAuth } from '../../contexts/AuthContext'
 import { useCart } from '../../contexts/CartContext'
 
@@ -24,24 +24,38 @@ interface ModalCartProps {
   mess: string
 }
 
+interface Product {
+  productId: number
+  name: string
+  category: string
+  imgUrl: string
+  price: number
+  userId: number
+  id?: number
+}
+
 export const ModalCart = ({ isOpen, onClose }: ModalCartProps) => {
-  const { cart, loadCart, removeCart } = useCart()
+  const { cart, loadCart, removeCart, getTotal, total } = useCart()
   const { user, accessToken } = useAuth()
 
-  const handleDelete = (product: any) => {
+  const handleDelete = (product: Product) => {
     removeCart(product, accessToken)
     loadCart(user, accessToken)
+    getTotal()
   }
 
   const finishCart = () => {
     cart.forEach(item => removeCart(item, accessToken))
-    loadCart(user, accessToken)
     onClose()
   }
 
   useEffect(() => {
     loadCart(user, accessToken)
   }, [])
+
+  useEffect(() => {
+    getTotal()
+  }, [cart])
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -53,38 +67,36 @@ export const ModalCart = ({ isOpen, onClose }: ModalCartProps) => {
         </ModalHeader>
         <ModalBody>
           <Center flexDir="column">
-            <Box w="100%" fontWeight="bold" fontSize="lg">
+            <Box
+              alignItems="center"
+              alignContent="center"
+              w="100%"
+              fontWeight="bold"
+              fontSize="lg"
+            >
               {cart.map(product => (
                 <Flex
+                  mt="2"
                   width="100%"
                   dir="column"
-                  justifyContent="space-around"
+                  justifyContent="space-between"
                   key={product.name}
                 >
-                  <HStack spacing="8">
-                    <Image w="32px" src={product.imgUrl} />
-                    <Text>{product.name}</Text>
-                    <Text>${product.price}</Text>
-                    <Button
-                      colorScheme="red"
-                      onClick={() => handleDelete(product)}
-                    >
-                      X
-                    </Button>
-                  </HStack>
+                  <Image w="32px" src={product.imgUrl} />
+                  <Text>{product.name}</Text>
+                  <Text>${product.price}</Text>
+                  <Button
+                    colorScheme="gray"
+                    onClick={() => handleDelete(product)}
+                  >
+                    <FaTrash />
+                  </Button>
                 </Flex>
               ))}
             </Box>
-            <Text>
-              Total:{' '}
-              {
-                (cart
-                  .map(product => product.price)
-                  .reduce((acc, cur: number) => acc + cur),
-                0)
-              }
-            </Text>
+            <Text>Total: {total.toFixed(2)} </Text>
           </Center>
+          <Box></Box>
         </ModalBody>
 
         <ModalFooter justifyContent="center">

@@ -12,14 +12,12 @@ interface ProductData {
 }
 
 export const Card = ({ product }: any) => {
-  const { addCart, loadCart } = useCart()
+  const { addCart, loadCart, getTotal, cart } = useCart()
   const { user, accessToken } = useAuth()
 
-  const newProduct = { ...product, userId: user.id }
-
   const handleAddCart = () => {
+    const newProduct = { ...product, userId: user.id }
     addCart(newProduct, accessToken)
-    loadCart(user, accessToken)
   }
 
   return (
